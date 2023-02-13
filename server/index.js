@@ -26,7 +26,7 @@ const main = async () => {
 
 main().catch(console.error);
 
-app.use("/api", userRoutes);
+app.use("/users", userRoutes);
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 module.exports = {
