@@ -1,34 +1,15 @@
 require("dotenv").config({ path: "./.env" });
-const { MongoClient } = require("mongodb");
-const express = require("express");
-const PORT = process.env.PORT;
 const userRoutes = require("./routes/users");
+const { errorHandler } = require("./middleware/errorHandler");
+const PORT = process.env.PORT;
+const express = require("express");
 
 const app = express();
 
-let client;
-
-const main = async () => {
-  const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PW}@cluster0.6dacjt9.mongodb.net/?retryWrites=true&w=majority`;
-  client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  try {
-    await client.connect();
-    console.log("MongoDB connected");
-  } catch (error) {
-    console.error(error);
-  } finally {
-    await client.close();
-  }
-};
-
-main().catch(console.error);
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.use("/users", userRoutes);
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.use(errorHandler);
 
-module.exports = {
-  client,
-};
+app.listen(PORT, () => console.log(`server running on port ${PORT}`));
