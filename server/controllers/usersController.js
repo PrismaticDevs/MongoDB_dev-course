@@ -25,7 +25,15 @@ const createUser = async (req, res) => {
     password: hash,
     username: username,
   });
-  return res.json(`Created user: ${user.username}`);
+  if (user) {
+    return res.json({
+      _id: user.id,
+      username: user.username,
+      token: genToken(user._id),
+    });
+  } else {
+    res.json("Failed to register user");
+  }
 };
 
 const deleteUser = async (req, res) => {
@@ -56,10 +64,17 @@ const loginUser = async (req, res) => {
       _id: user.id,
       username: user.username,
       email: user.email,
+      token: genToken(user._id),
     });
   } else {
     return res.json("Invalid credentials");
   }
+};
+
+const genToken = (id) => {
+  jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "3h",
+  });
 };
 
 module.exports = {
