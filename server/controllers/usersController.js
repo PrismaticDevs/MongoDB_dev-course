@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
 
 const getUsers = async (req, res) => {
@@ -16,9 +18,11 @@ const createUser = async (req, res) => {
       "Username, email, and password are required to create a user"
     );
   }
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(password, salt);
   const user = await User.create({
     email: email,
-    password: password,
+    password: hash,
     username: username,
   });
   return res.json(`Created user: ${user.username}`);
