@@ -3,6 +3,9 @@ const userRoutes = require("./routes/users");
 const { errorHandler } = require("./middleware/errorHandler");
 const PORT = process.env.PORT;
 const express = require("express");
+const connectDB = require("./config/db");
+
+connectDB();
 
 const app = express();
 
