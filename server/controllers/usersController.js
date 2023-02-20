@@ -48,9 +48,24 @@ const updateUser = async (req, res) => {
   return res.json(`Updated user: ${updatedUser.email}`);
 };
 
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (user && (await bcrypt.compare(password, user.password))) {
+    return res.json({
+      _id: user.id,
+      username: user.username,
+      email: user.email,
+    });
+  } else {
+    return res.json("Invalid credentials");
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
   updateUser,
   deleteUser,
+  loginUser,
 };
